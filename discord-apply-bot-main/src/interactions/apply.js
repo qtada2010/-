@@ -38,7 +38,7 @@ module.exports = {
             .setCustomId('reasonInput')
             .setLabel('سبب التقديم')
             .setStyle(TextInputStyle.Paragraph)
-            .setPlaceholder('ادخل سبب التقديم هنا')
+            .setPlaceholder('هل انت اداري بسيرفر اخر او كنت اداري (ملاحظة اذا كنت اداري عليك الاستقالة ولا يوجد نقل رتب)')
             .setRequired(true);
 
         // Create action rows for each text input
@@ -54,4 +54,5 @@ module.exports = {
     },
 
 };
+
 
