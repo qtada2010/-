@@ -1,59 +1,18 @@
 {
-  "TOKEN": "التوكن",
+  "TOKEN": "MTQ1MDA3Mzk2Mjk4OTIyODA1NA.GHhryo.X_lM6R6JYVC2ThiFRsg5TvVaAvTwMNtgSpzEvo",
   "APPLY": {
     "GANGS": {
-      "NAME": "القسم الاول",
-      "BANNER": "https://media.discordapp.net/attachments/918613591584825355/1181626902750953512/Screenshot_25.png?ex=6581becf&is=656f49cf&hm=448d954a729290387b0678392ba3528a8b18de46617cdd2f54b76083cf95f2f9&=&format=webp&quality=lossless&width=1044&height=675",
+      "NAME": "تقديم ادارة",
+      "BANNER": "https://media.discordapp.net/attachments/1360812462924107866/1450077088274055259/image.png?ex=69413906&is=693fe786&hm=5d268ec0eeaa76e8c9eeef234c1d12a80f8d41d865f32500e19e71947c2848aa&=&format=webp&quality=lossless",
       "DATA": [
         {
-          "name": "تقديم 1",
-          "emoji": "ايموجي",
-          "CHANNEL": "ايدي_الروم",
-          "role": "ايدي_الرتبة"
+          "name": "تقديم ادارة",
+          "emoji": "🔰",
+          "CHANNEL": "1418304633780175081",
+          "role": "1418320064771395615"
         },
-        {
-          "name": "تقديم 2",
-          "emoji": "ايموجي",
-          "CHANNEL": "ايدي_الروم",
-          "role": "ايدي_الرتبة"
-        }
       ]
     },
-    "GOV": {
-      "NAME": "القسم الثاني",
-      "BANNER": "https://media.discordapp.net/attachments/918613591584825355/1181626902750953512/Screenshot_25.png?ex=6581becf&is=656f49cf&hm=448d954a729290387b0678392ba3528a8b18de46617cdd2f54b76083cf95f2f9&=&format=webp&quality=lossless&width=1044&height=675",
-      "DATA": [
-        {
-          "name": "تقديم 1",
-          "emoji": "ايموجي",
-          "CHANNEL": "ايدي_الروم",
-          "role": "ايدي_الرتبة"
-        },
-        {
-          "name": "تقديم 2",
-          "emoji": "ايموجي",
-          "CHANNEL": "ايدي_الروم",
-          "role": "ايدي_الرتبة"
-        }
-      ]
-    },
-    "MOD": {
-      "NAME": "القسم الثالث",
-      "BANNER": "https://media.discordapp.net/attachments/918613591584825355/1181626902750953512/Screenshot_25.png?ex=6581becf&is=656f49cf&hm=448d954a729290387b0678392ba3528a8b18de46617cdd2f54b76083cf95f2f9&=&format=webp&quality=lossless&width=1044&height=675",
-      "DATA": [
-        {
-          "name": "تقديم 1",
-          "emoji": "ايموجي",
-          "CHANNEL": "ايدي_الروم",
-          "role": "ايدي_الرتبة"
-        },
-        {
-          "name": "تقديم 2",
-          "emoji": "ايموجي",
-          "CHANNEL": "ايدي_الروم",
-          "role": "ايدي_الرتبة"
-        }
-      ]
     }
   }
-}
+
