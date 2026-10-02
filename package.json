@@ -1,0 +1,22 @@
+{
+  "name": "discord-ticket-bot",
+  "version": "1.0.0",
+  "description": "Discord Ticket Bot with Select Menus & Buttons via PostgreSQL",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test",
+    "check": "node checkSyntax.js",
+    "snapshot": "node renderSnapshots.js",
+    "snapshot:before": "node renderSnapshots.js .snapshots/before",
+    "snapshot:after": "node renderSnapshots.js .snapshots/after",
+    "snapshot:diff": "node compareSnapshots.js .snapshots/before .snapshots/after",
+    "verify": "npm run check && npm test"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "discord-html-transcripts": "^3.1.5",
+    "express": "^4.18.2",
+    "pg": "^8.11.3"
+  }
+}
