@@ -1536,7 +1536,13 @@ module.exports = function createClansSystem(client, pool, helpers) {
   // ------------------------------------------------------------------------
   client.on('messageCreate', async (message) => {
     try {
-      if (message.author.bot || !message.guild || !message.member) return;
+      // 🛡️ حارس التنفيذ المزدوج: messageCreate.js و system.js و xp.js يتحققون
+      // من هذا العلم قبل العمل؛ clans.js وحده لم يكن يتحقق منه. والنتيجة أن
+      // اختصاراً مضبوطاً في «إعدادات أوامر السلاش» و«إعدادات الكلانات» معاً
+      // كان يُنفَّذ مرتين: مرة عبر slashPrefix (يوجّهه إلى /clan) ومرة هنا.
+      // باقي المستمعات مسجّلة بعد slashPrefix، فمن يسبق يكسب — والسلوك الآن
+      // موحّد: الرسالة تُعالَج مرة واحدة فقط.
+      if (message.author.bot || !message.guild || !message.member || message.__slashCommandHandled) return;
       // 🔓 (2026-10-02) «!» و«$» سواء: اختصار المالك يعمل بأي بريفكس.
       const clanText = message.content.trim();
       const clanPrefix = (clanText[0] === PREFIX || clanText[0] === ADMIN_PREFIX) ? clanText[0] : '';
