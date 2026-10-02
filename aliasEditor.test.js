@@ -18,16 +18,35 @@
 const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const vm = require('vm');
+const { execFileSync } = require('child_process');
 
-// اللقطة تُولَّد محلياً (npm run snapshot:after) ولا تُرفع للمستودع؛ نُفشل
-// برسالة واضحة بدل خطأ ENOENT غامض إن غابت.
-const snapshotFile = path.join(__dirname, '.snapshots', 'after', 'commands.html');
-if (!fs.existsSync(snapshotFile)) {
-  throw new Error('لقطة الصفحة غير موجودة — شغّل أولاً: npm run snapshot:after');
+// اللقطة تُولَّد محلياً (npm run snapshot:after) ولا تُرفع للمستودع.
+//
+// ⚠️ كانت هذه حزمة الاختبارات كلها تفشل على أي نسخة جديدة من المستودع لأن
+// المجلد غير موجود فيها — أي أن `npm test` (و `npm run verify` الذي يوثّقه
+// README كشبكة الأمان) كانا يفشلان من أول تشغيل بلا أي علاقة بالكود.
+//
+// الحل: إن وُجدت اللقطة نقرؤها، وإلا نُولّدها تلقائياً في مجلد مؤقت. لا يتغيّر
+// أي سلوك لمن يولّد لقطاته بنفسه، ويصبح `npm test` عاملاً وحده.
+function resolveSnapshotHtml() {
+  const committed = path.join(__dirname, '.snapshots', 'after', 'commands.html');
+  if (fs.existsSync(committed)) return fs.readFileSync(committed, 'utf8');
+
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'on-snapshot-'));
+  try {
+    execFileSync(process.execPath, [path.join(__dirname, 'renderSnapshots.js'), tmpDir], { stdio: 'ignore' });
+  } catch (error) {
+    throw new Error(`تعذّر توليد لقطة صفحة /commands تلقائياً: ${error.message}`);
+  }
+  const generated = path.join(tmpDir, 'commands.html');
+  if (!fs.existsSync(generated)) throw new Error('لم تُنتَج لقطة صفحة /commands');
+  return fs.readFileSync(generated, 'utf8');
 }
-const pageHtml = fs.readFileSync(snapshotFile, 'utf8');
+
+const pageHtml = resolveSnapshotHtml();
 
 // ---------------------------------------------------------------------------
 // DOM مصغّر: يكفي ما يستعمله سكربت المحرّر فقط

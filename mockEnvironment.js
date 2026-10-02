@@ -24,13 +24,25 @@ const FIXED_ROWS = {
     clan_cmd_role_id: '100000000000000005',
     clear_cleanup_mode: 'bot_only'
   }],
+  // ⚠️ أسماء الأعمدة هنا يجب أن تطابق مخطط database.js حرفياً.
+  // كانت هذه الصفوف تستخدم (id / name / style) بينما الجدول الحقيقي يستخدم
+  // (panel_id / type / message_type)، فكانت كل لقطة لصفحة /panel و/edit-panel
+  // تُصيَّر بمعرّف undefined وروابط تعديل وحذف مكسورة — أي أن أداة التحقق
+  // نفسها كانت تعرض صفحة مكسورة لا تماثل الإنتاج.
   panels: [{
-    id: 1, name: 'لوحة تجريبية', channel_id: '200000000000000001',
-    title: 'عنوان', description: 'وصف', color: '#4f46e5', style: 'select'
+    panel_id: '1', channel_id: '200000000000000001', category_id: '300000000000000001',
+    admin_role_id: '100000000000000001', high_admin_role_id: '100000000000000002',
+    log_channel_id: '500000000000000001',
+    title: 'عنوان', description: 'وصف',
+    type: 'select', message_type: 'embed',
+    image_url: '', color: '#4f46e5', last_message_id: '',
+    claim_admin_enabled: false, claim_mediator_enabled: false,
+    mediator_role_id: '100000000000000002'
   }],
   panel_options: [{
-    id: 1, panel_id: 1, label: 'خيار', description: 'وصف الخيار',
-    emoji: '🎫', category_id: '300000000000000001'
+    id: 1, panel_id: '1', option_id: '1', label: 'خيار', description: 'وصف الخيار',
+    emoji: '🎫', welcome_message: 'مرحباً بتذكرتك', button_style: 'Primary',
+    category_id: '300000000000000001'
   }],
   bot_settings: [{ key: 'default', value: '{}' }],
   apply_setup: [{ id: 1 }],
@@ -68,6 +80,14 @@ function createMockPool(options = {}) {
   async function query(sql, params = []) {
     const text = String(sql);
     const table = tableOf(text);
+
+    // 📊 استعلامات العدّ (SELECT COUNT(*) …) لا تُرجع صفوف الجدول بل رقماً
+    // واحداً. بدون هذه الحالة يعود optionsCount في صفحة /panel بـ undefined
+    // فيظهر «الخيارات: undefined» في كل لقطة ومعاينة.
+    if (/^\s*SELECT\s+COUNT\s*\(/i.test(text)) {
+      const source = persist ? (tables[table] || []) : (FIXED_ROWS[table] || []);
+      return { rows: [{ count: String(source.length) }], rowCount: 1 };
+    }
 
     if (!persist) {
       const rows = FIXED_ROWS[table] || [];

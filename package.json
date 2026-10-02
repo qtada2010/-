@@ -14,8 +14,8 @@
     "verify": "npm run check && npm test"
   },
   "dependencies": {
+    "discord-html-transcripts": "3.2.0",
     "discord.js": "^14.14.1",
-    "discord-html-transcripts": "^3.1.5",
     "express": "^4.18.2",
     "pg": "^8.11.3"
   }

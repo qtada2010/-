@@ -121,15 +121,20 @@ function optionsFor(command, subcommand) {
   return { options: selected ? (selected.options || []) : [], subcommands: subs };
 }
 
-/** سطر الصيغة: !الأمر <مطلوب> [اختياري] */
+// ⚠️ صيغة العرض هي السلاش «/» لا البريفكس «!».
+// السياسة الفعلية المنفَّذة في slashPrefix.js: الاسم الرسمي للأمر (ban · top …)
+// يعمل **بالسلاش فقط**؛ فـ «!ban» لا يُنفَّذ ولا يرد بشيء. لذلك أي إيمبد
+// استخدام يقرأه العضو يجب أن يعرض الصيغة التي تعمل فعلاً، لا صيغة ميتة.
+
+/** سطر الصيغة: /الأمر <مطلوب> [اختياري] */
 function buildSyntax(commandName, subcommand, options) {
   const parts = options.map(o => (o.required ? `<${o.name}>` : `[${o.name}]`));
-  return `!${commandName}${subcommand ? ` ${subcommand}` : ''}${parts.length ? ' ' + parts.join(' ') : ''}`;
+  return `/${commandName}${subcommand ? ` ${subcommand}` : ''}${parts.length ? ' ' + parts.join(' ') : ''}`;
 }
 
 /** مثالان: واحد بالحد الأدنى المطلوب، وآخر كامل — إن اختلفا */
 function buildExamples(commandName, subcommand, options) {
-  const head = `!${commandName}${subcommand ? ` ${subcommand}` : ''}`;
+  const head = `/${commandName}${subcommand ? ` ${subcommand}` : ''}`;
   const requiredOnly = options.filter(o => o.required).map(sampleFor);
   const everything = options.map(sampleFor);
 
@@ -177,7 +182,11 @@ function buildUsageEmbed(command, {
   invokedAs = null
 } = {}) {
   const { options, subcommands } = optionsFor(command, subcommand);
-  const head = `${prefix}${invokedAs || command.name}${subcommand ? ` ${subcommand}` : ''}`;
+  // سطر الأساس: إن استُدعي الأمر باختصار نعرض ما كتبه العضو فعلاً (فهو يعمل
+  // مجرّداً وبالبريفكس على السواء)، وإلا فالاسم الرسمي — وصيغته الوحيدة
+  // العاملة هي السلاش. كنا نعرض «!ban» وهو أمر ميت تماماً.
+  const base = invokedAs ? `${prefix}${invokedAs}` : `/${command.name}`;
+  const head = `${base}${subcommand ? ` ${subcommand}` : ''}`;
   const permission = COMMAND_PERMISSIONS[command.name] || 'للجميع';
 
   // عند عدم اختيار نوع فرعي نعرض النوع كجزء من الصيغة، وإلا خرج السطر
@@ -223,9 +232,10 @@ function buildUsageEmbed(command, {
     lines.push(`⏱️ **المدة:** ${DURATION_HINT}`);
   }
 
-  // ٦) طرق الاستدعاء: الاسم الرسمي + اختصارات اللوحة، سطر واحد
-  // الاسم الرسمي يلزمه «!» أو «/»، أما الاختصارات فتعمل مجرّدة كما حُدّدت.
-  const forms = [`\`${prefix || '!'}${command.name}\``, `\`/${command.name}\``];
+  // ٦) طرق الاستدعاء: الاسم الرسمي + اختصارات اللوحة، سطر واحد.
+  // الاسم الرسمي يُعرض بالسلاش وحده لأنه صيغته الوحيدة العاملة؛
+  // أما الاختصارات فتعمل مجرّدة وبالبريفكس كما حدّدها المالك.
+  const forms = [`\`/${command.name}\``];
   const extras = (aliases || []).map(alias => String(alias).trim()).filter(Boolean).slice(0, 8);
   if (extras.length) forms.push(...extras.map(alias => `\`${alias}\``));
   lines.push(`🔑 **الاستدعاء:** ${forms.join(' · ')}`);
